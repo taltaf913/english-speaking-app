@@ -1,0 +1,2282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpeakEasy India - Advanced English Speaking Practice Platform</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Google Translate Widget -->
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                includedLanguages: 'en,hi,bn,te,ta,mr,gu,ml,kn,pa,or,as,ur,ne,si',
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                autoDisplay: false
+            }, 'google_translate_element');
+        }
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <style>
+        @keyframes pulse-soft {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.9; }
+        }
+        .pulse-soft {
+            animation: pulse-soft 2s infinite;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .gradient-bg-alt {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .speech-wave {
+            display: inline-block;
+            width: 3px;
+            height: 20px;
+            background: currentColor;
+            margin: 0 2px;
+            animation: wave 1s ease-in-out infinite;
+        }
+        .speech-wave:nth-child(2) { animation-delay: 0.1s; height: 25px; }
+        .speech-wave:nth-child(3) { animation-delay: 0.2s; height: 30px; }
+        .speech-wave:nth-child(4) { animation-delay: 0.3s; height: 25px; }
+        .speech-wave:nth-child(5) { animation-delay: 0.4s; height: 20px; }
+        @keyframes wave {
+            0%, 100% { transform: scaleY(1); }
+            50% { transform: scaleY(0.5); }
+        }
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 50;
+        }
+        .modal-overlay.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .accuracy-ring {
+            stroke-dasharray: 314;
+            stroke-dashoffset: 314;
+            transition: stroke-dashoffset 1s ease;
+        }
+        .dark-mode {
+            filter: invert(1) hue-rotate(180deg);
+        }
+        .dark-mode img, .dark-mode video {
+            filter: invert(1) hue-rotate(180deg);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 transition-all duration-300" id="app-body">
+    <!-- Google Translate Widget Bar -->
+    <div class="bg-gray-100 py-2 px-4 text-center">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <span class="text-sm text-gray-700">Choose your language / अपनी भाषा चुनें:</span>
+            <div id="google_translate_element"></div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="gradient-bg text-white py-4 px-6 shadow-lg sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold flex items-center cursor-pointer" onclick="showSection('hero')">
+                <span class="mr-2">🗣️</span> SpeakEasy India
+            </h1>
+            <div class="hidden md:flex gap-4">
+                <button onclick="showSection('translator')" class="hover:bg-white/20 px-4 py-2 rounded transition bg-white/10">🌐 Translator</button>
+                <button onclick="showSection('lessons')" class="hover:bg-white/20 px-4 py-2 rounded transition">Lessons</button>
+                <button onclick="showSection('practice')" class="hover:bg-white/20 px-4 py-2 rounded transition">Practice</button>
+                <button onclick="showSection('pronunciation')" class="hover:bg-white/20 px-4 py-2 rounded transition">Pronunciation</button>
+                <button onclick="showSection('vocabulary')" class="hover:bg-white/20 px-4 py-2 rounded transition">Vocabulary</button>
+                <button onclick="showSection('conversations')" class="hover:bg-white/20 px-4 py-2 rounded transition">Conversations</button>
+                <button onclick="showSection('progress')" class="hover:bg-white/20 px-4 py-2 rounded transition">Progress</button>
+                <button onclick="toggleDarkMode()" class="hover:bg-white/20 px-3 py-2 rounded transition">🌓</button>
+            </div>
+            <button onclick="toggleMobileMenu()" class="md:hidden">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="hidden md:hidden mt-4 pb-4">
+            <button onclick="showSection('translator')" class="block w-full text-left hover:bg-white/20 px-4 py-2 rounded transition">🌐 Translator</button>
+            <button onclick="showSection('lessons')" class="block w-full text-left hover:bg-white/20 px-4 py-2 rounded transition">Lessons</button>
+            <button onclick="showSection('practice')" class="block w-full text-left hover:bg-white/20 px-4 py-2 rounded transition">Practice</button>
+            <button onclick="showSection('pronunciation')" class="block w-full text-left hover:bg-white/20 px-4 py-2 rounded transition">Pronunciation</button>
+            <button onclick="showSection('vocabulary')" class="block w-full text-left hover:bg-white/20 px-4 py-2 rounded transition">Vocabulary</button>
+            <button onclick="showSection('conversations')" class="block w-full text-left hover:bg-white/20 px-4 py-2 rounded transition">Conversations</button>
+            <button onclick="showSection('progress')" class="block w-full text-left hover:bg-white/20 px-4 py-2 rounded transition">Progress</button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div id="hero" class="section gradient-bg text-white py-16 px-6">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-4xl font-bold mb-4">Master Spoken English with Confidence</h2>
+            <p class="text-xl mb-8">Specially designed for Indian speakers to overcome common pronunciation challenges and speak fluently</p>
+            <div class="flex gap-4 justify-center">
+                <button onclick="showSection('translator')" class="bg-white text-purple-700 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition">
+                    🌐 Translate & Speak
+                </button>
+                <button onclick="showSection('lessons')" class="bg-white text-purple-700 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition">
+                    Start Learning
+                </button>
+                <button onclick="startDailyPractice()" class="bg-purple-800 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-900 transition">
+                    Daily Practice
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Translator Section -->
+    <div id="translator" class="section hidden py-12 px-6">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-3xl font-bold mb-6 text-center">🌐 Smart Language Translator</h2>
+            
+            <!-- Important Notice -->
+            <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
+                <p class="text-sm">
+                    <strong>💡 Tip:</strong> For best results, use the Google Translate bar at the top for full page translation. 
+                    This section is for practice and learning individual phrases.
+                </p>
+            </div>
+            
+            <!-- Language Selection -->
+            <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+                <div class="grid md:grid-cols-2 gap-6">
+                    <!-- Source Language -->
+                    <div>
+                        <label class="block text-sm font-semibold mb-2">Select Your Language:</label>
+                        <select id="sourceLanguage" class="w-full p-3 border rounded-lg bg-gray-50" onchange="updateTranslatorUI()">
+                            <option value="hi">Hindi (हिंदी)</option>
+                            <option value="bn">Bengali (বাংলা)</option>
+                            <option value="te">Telugu (తెలుగు)</option>
+                            <option value="mr">Marathi (मराठी)</option>
+                            <option value="ta">Tamil (தமிழ்)</option>
+                            <option value="gu">Gujarati (ગુજરાતી)</option>
+                            <option value="kn">Kannada (ಕನ್ನಡ)</option>
+                            <option value="ml">Malayalam (മലയാളം)</option>
+                            <option value="pa">Punjabi (ਪੰਜਾਬੀ)</option>
+                            <option value="or">Odia (ଓଡ଼ିଆ)</option>
+                            <option value="as">Assamese (অসমীয়া)</option>
+                            <option value="ur">Urdu (اردو)</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Translation Mode -->
+                    <div>
+                        <label class="block text-sm font-semibold mb-2">Translation Mode:</label>
+                        <select id="translationMode" class="w-full p-3 border rounded-lg bg-gray-50" onchange="updateTranslationMode()">
+                            <option value="toEnglish">To English</option>
+                            <option value="fromEnglish">From English</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Translation Input/Output -->
+            <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+                <div class="grid md:grid-cols-2 gap-6">
+                    <!-- Input Area -->
+                    <div>
+                        <label class="block text-sm font-semibold mb-2">Input Text:</label>
+                        <div class="relative">
+                            <textarea id="sourceText" 
+                                placeholder="Type here or use voice input..." 
+                                class="w-full p-4 border rounded-lg resize-none h-48 bg-gray-50"
+                                oninput="performTranslation()"></textarea>
+                            <div class="absolute bottom-4 right-4 flex gap-2">
+                                <button onclick="startVoiceInput()" class="bg-red-600 text-white p-2 rounded-full hover:bg-red-700 transition" title="Voice Input">
+                                    🎤
+                                </button>
+                                <button onclick="clearTranslator()" class="bg-gray-600 text-white p-2 rounded-full hover:bg-gray-700 transition" title="Clear">
+                                    🗑️
+                                </button>
+                            </div>
+                        </div>
+                        <div id="voiceStatus" class="mt-2 text-sm text-gray-600"></div>
+                        <div id="charCount" class="text-xs text-gray-500 mt-1">0 characters</div>
+                    </div>
+                    
+                    <!-- Output Area -->
+                    <div>
+                        <label class="block text-sm font-semibold mb-2">Translation:</label>
+                        <div class="relative">
+                            <textarea id="translatedText" 
+                                placeholder="Translation will appear here..." 
+                                class="w-full p-4 border rounded-lg resize-none h-48 bg-blue-50" 
+                                readonly></textarea>
+                            <div class="absolute bottom-4 right-4 flex gap-2">
+                                <button onclick="speakTranslation()" id="speakBtn" class="bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 transition" title="Listen">
+                                    🔊
+                                </button>
+                                <button onclick="copyTranslation()" class="bg-green-600 text-white p-2 rounded-full hover:bg-green-700 transition" title="Copy">
+                                    📋
+                                </button>
+                                <button onclick="saveToFavorites()" class="bg-yellow-600 text-white p-2 rounded-full hover:bg-yellow-700 transition" title="Save to Favorites">
+                                    ⭐
+                                </button>
+                            </div>
+                        </div>
+                        <div id="pronunciationGuide" class="mt-2 text-sm text-gray-600 italic"></div>
+                    </div>
+                </div>
+                
+                <!-- Translation Status -->
+                <div id="translationStatus" class="mt-4 text-center text-sm text-gray-600"></div>
+            </div>
+
+            <!-- Quick Phrases by Category -->
+            <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+                <h3 class="text-xl font-bold mb-4">Quick Phrases by Category</h3>
+                
+                <!-- Category Tabs -->
+                <div class="flex flex-wrap gap-2 mb-4">
+                    <button onclick="showPhraseCategory('greetings')" class="phraseTab bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700">Greetings</button>
+                    <button onclick="showPhraseCategory('daily')" class="phraseTab bg-gray-400 text-white px-4 py-2 rounded text-sm hover:bg-gray-500">Daily Use</button>
+                    <button onclick="showPhraseCategory('emergency')" class="phraseTab bg-gray-400 text-white px-4 py-2 rounded text-sm hover:bg-gray-500">Emergency</button>
+                    <button onclick="showPhraseCategory('business')" class="phraseTab bg-gray-400 text-white px-4 py-2 rounded text-sm hover:bg-gray-500">Business</button>
+                    <button onclick="showPhraseCategory('travel')" class="phraseTab bg-gray-400 text-white px-4 py-2 rounded text-sm hover:bg-gray-500">Travel</button>
+                </div>
+                
+                <!-- Phrases Grid -->
+                <div id="phrasesGrid" class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    <!-- Phrases will be loaded dynamically -->
+                </div>
+            </div>
+
+            <!-- Favorites Section -->
+            <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-bold">⭐ Favorite Translations</h3>
+                    <button onclick="clearFavorites()" class="text-red-600 text-sm hover:underline">Clear All</button>
+                </div>
+                <div id="favoritesList" class="space-y-2">
+                    <p class="text-gray-500">No favorites saved yet</p>
+                </div>
+            </div>
+
+            <!-- Translation Tips -->
+            <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-6">
+                <h3 class="text-xl font-bold mb-4">💡 Translation & Speaking Tips</h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="font-semibold mb-2">Common Translation Mistakes:</h4>
+                        <ul class="text-sm space-y-1">
+                            <li>• Direct word-to-word translation often doesn't work</li>
+                            <li>• English uses articles (a, an, the) more than Indian languages</li>
+                            <li>• Word order can be different (Subject-Verb-Object in English)</li>
+                            <li>• Tenses are more specific in English</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold mb-2">Practice Method:</h4>
+                        <ul class="text-sm space-y-1">
+                            <li>• Translate a sentence</li>
+                            <li>• Listen to the pronunciation</li>
+                            <li>• Repeat it 3 times</li>
+                            <li>• Use it in a conversation</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lessons Section -->
+    <div id="lessons" class="section hidden py-12 px-6">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-3xl font-bold mb-8 text-center">Speaking Lessons</h2>
+            <div class="grid md:grid-cols-3 gap-6">
+                <!-- Beginner Level -->
+                <div class="card-hover bg-white rounded-lg shadow-lg p-6">
+                    <div class="text-green-600 text-4xl mb-4">🌱</div>
+                    <h3 class="text-xl font-bold mb-3">Beginner</h3>
+                    <ul class="space-y-2 mb-4">
+                        <li class="flex items-center"><span class="mr-2">✓</span> Basic Greetings</li>
+                        <li class="flex items-center"><span class="mr-2">✓</span> Self Introduction</li>
+                        <li class="flex items-center"><span class="mr-2">✓</span> Common Words</li>
+                        <li class="flex items-center"><span class="mr-2">✓</span> Numbers & Time</li>
+                    </ul>
+                    <button onclick="startLesson('beginner')" class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 transition">
+                        Start Beginner
+                    </button>
+                </div>
+
+                <!-- Intermediate Level -->
+                <div class="card-hover bg-white rounded-lg shadow-lg p-6">
+                    <div class="text-blue-600 text-4xl mb-4">📚</div>
+                    <h3 class="text-xl font-bold mb-3">Intermediate</h3>
+                    <ul class="space-y-2 mb-4">
+                        <li class="flex items-center"><span class="mr-2">✓</span> Daily Conversations</li>
+                        <li class="flex items-center"><span class="mr-2">✓</span> Office English</li>
+                        <li class="flex items-center"><span class="mr-2">✓</span> Phone Calls</li>
+                        <li class="flex items-center"><span class="mr-2">✓</span> Email Speaking</li>
+                    </ul>
+                    <button onclick="startLesson('intermediate')" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">
+                        Start Intermediate
+                    </button>
+                </div>
+
+                <!-- Advanced Level -->
+                <div class="card-hover bg-white rounded-lg shadow-lg p-6">
+                    <div class="text-purple-600 text-4xl mb-4">🚀</div>
+                    <h3 class="text-xl font-bold mb-3">Advanced</h3>
+                    <ul class="space-y-2 mb-4">
+                        <li class="flex items-center"><span class="mr-2">✓</span> Presentations</li>
+                        <li class="flex items-center"><span class="mr-2">✓</span> Interviews</li>
+                        <li class="flex items-center"><span class="mr-2">✓</span> Group Discussions</li>
+                        <li class="flex items-center"><span class="mr-2">✓</span> Public Speaking</li>
+                    </ul>
+                    <button onclick="startLesson('advanced')" class="w-full bg-purple-600 text-white py-2 rounded hover:bg-purple-700 transition">
+                        Start Advanced
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Practice Section -->
+    <div id="practice" class="section hidden py-12 px-6">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="text-3xl font-bold mb-8 text-center">Speaking Practice</h2>
+            
+            <!-- Practice Card -->
+            <div class="bg-white rounded-lg shadow-lg p-8 mb-6">
+                <div id="practiceContent" class="mb-6">
+                    <p class="text-gray-600 mb-4">Click "Start Practice" to begin your speaking exercise</p>
+                </div>
+                
+                <div class="flex gap-4 justify-center mb-6">
+                    <button onclick="startPractice()" class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition">
+                        <span class="mr-2">▶️</span> Start Practice
+                    </button>
+                    <button onclick="playAudio()" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition">
+                        <span class="mr-2">🔊</span> Listen
+                    </button>
+                    <button onclick="recordAudio()" id="recordBtn" class="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition">
+                        <span class="mr-2">🎤</span> Record
+                    </button>
+                </div>
+
+                <div id="feedback" class="hidden bg-blue-50 border-l-4 border-blue-600 p-4 rounded">
+                    <h4 class="font-bold mb-2">Feedback</h4>
+                    <p id="feedbackText"></p>
+                </div>
+            </div>
+
+            <!-- Common Mistakes -->
+            <div class="bg-yellow-50 rounded-lg p-6">
+                <h3 class="font-bold text-xl mb-4">Common Mistakes by Indian Speakers</h3>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="bg-white p-4 rounded">
+                        <h4 class="font-semibold text-red-600">❌ Incorrect</h4>
+                        <p>"I am having doubt"</p>
+                    </div>
+                    <div class="bg-white p-4 rounded">
+                        <h4 class="font-semibold text-green-600">✓ Correct</h4>
+                        <p>"I have a doubt" or "I have a question"</p>
+                    </div>
+                    <div class="bg-white p-4 rounded">
+                        <h4 class="font-semibold text-red-600">❌ Incorrect</h4>
+                        <p>"Myself John"</p>
+                    </div>
+                    <div class="bg-white p-4 rounded">
+                        <h4 class="font-semibold text-green-600">✓ Correct</h4>
+                        <p>"I am John" or "My name is John"</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pronunciation Section -->
+    <div id="pronunciation" class="section hidden py-12 px-6">
+        <div class="max-w-5xl mx-auto">
+            <h2 class="text-3xl font-bold mb-8 text-center">Pronunciation Guide</h2>
+            
+            <!-- Sound Practice -->
+            <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+                <h3 class="text-xl font-bold mb-4">Difficult Sounds for Indian Speakers</h3>
+                <div class="grid md:grid-cols-3 gap-4">
+                    <button onclick="practiceSoundPair('v', 'w')" class="bg-gray-100 p-4 rounded hover:bg-gray-200 transition">
+                        <h4 class="font-bold text-lg">V vs W</h4>
+                        <p class="text-sm text-gray-600">vine/wine, vest/west</p>
+                    </button>
+                    <button onclick="practiceSoundPair('th', 'd')" class="bg-gray-100 p-4 rounded hover:bg-gray-200 transition">
+                        <h4 class="font-bold text-lg">TH vs D</h4>
+                        <p class="text-sm text-gray-600">this/dis, that/dat</p>
+                    </button>
+                    <button onclick="practiceSoundPair('f', 'p')" class="bg-gray-100 p-4 rounded hover:bg-gray-200 transition">
+                        <h4 class="font-bold text-lg">F vs P</h4>
+                        <p class="text-sm text-gray-600">phone/pone, coffee/copy</p>
+                    </button>
+                    <button onclick="practiceSoundPair('z', 's')" class="bg-gray-100 p-4 rounded hover:bg-gray-200 transition">
+                        <h4 class="font-bold text-lg">Z vs S</h4>
+                        <p class="text-sm text-gray-600">zoo/sue, buzz/bus</p>
+                    </button>
+                    <button onclick="practiceSoundPair('sh', 's')" class="bg-gray-100 p-4 rounded hover:bg-gray-200 transition">
+                        <h4 class="font-bold text-lg">SH vs S</h4>
+                        <p class="text-sm text-gray-600">ship/sip, wash/was</p>
+                    </button>
+                    <button onclick="practiceSoundPair('r', 'l')" class="bg-gray-100 p-4 rounded hover:bg-gray-200 transition">
+                        <h4 class="font-bold text-lg">R vs L</h4>
+                        <p class="text-sm text-gray-600">right/light, road/load</p>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Word Stress Patterns -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h3 class="text-xl font-bold mb-4">Word Stress Patterns</h3>
+                <div class="space-y-4">
+                    <div class="border-l-4 border-blue-600 pl-4">
+                        <p class="font-semibold">phoTOgraphy (not PHOtography)</p>
+                        <p class="text-sm text-gray-600">Stress on second syllable</p>
+                    </div>
+                    <div class="border-l-4 border-green-600 pl-4">
+                        <p class="font-semibold">deCISion (not DEcision)</p>
+                        <p class="text-sm text-gray-600">Stress on second syllable</p>
+                    </div>
+                    <div class="border-l-4 border-purple-600 pl-4">
+                        <p class="font-semibold">opporTUnity (not OPPortunity)</p>
+                        <p class="text-sm text-gray-600">Stress on third syllable</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vocabulary Section -->
+    <div id="vocabulary" class="section hidden py-12 px-6">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-3xl font-bold mb-8 text-center">Vocabulary Builder</h2>
+            
+            <!-- Vocabulary Categories -->
+            <div class="grid md:grid-cols-4 gap-4 mb-8">
+                <button onclick="loadVocabularyCategory('business')" class="bg-blue-100 hover:bg-blue-200 p-4 rounded-lg transition">
+                    <div class="text-2xl mb-2">💼</div>
+                    <p class="font-semibold">Business</p>
+                </button>
+                <button onclick="loadVocabularyCategory('daily')" class="bg-green-100 hover:bg-green-200 p-4 rounded-lg transition">
+                    <div class="text-2xl mb-2">🏠</div>
+                    <p class="font-semibold">Daily Life</p>
+                </button>
+                <button onclick="loadVocabularyCategory('travel')" class="bg-yellow-100 hover:bg-yellow-200 p-4 rounded-lg transition">
+                    <div class="text-2xl mb-2">✈️</div>
+                    <p class="font-semibold">Travel</p>
+                </button>
+                <button onclick="loadVocabularyCategory('tech')" class="bg-purple-100 hover:bg-purple-200 p-4 rounded-lg transition">
+                    <div class="text-2xl mb-2">💻</div>
+                    <p class="font-semibold">Technology</p>
+                </button>
+            </div>
+            
+            <!-- Vocabulary Display Area -->
+            <div id="vocabularyContent" class="bg-white rounded-lg shadow-lg p-6">
+                <p class="text-gray-600">Select a category to start learning vocabulary</p>
+            </div>
+            
+            <!-- Flashcard Practice -->
+            <div class="mt-8 bg-white rounded-lg shadow-lg p-6">
+                <h3 class="text-xl font-bold mb-4">Quick Flashcard Practice</h3>
+                <div id="flashcardArea" class="text-center">
+                    <div class="bg-gray-100 rounded-lg p-8 mb-4">
+                        <p id="flashcardWord" class="text-2xl font-bold mb-2">Click 'Next Card' to begin</p>
+                        <p id="flashcardMeaning" class="text-gray-600 hidden">Meaning will appear here</p>
+                    </div>
+                    <div class="flex gap-4 justify-center">
+                        <button onclick="flipFlashcard()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+                            Flip Card
+                        </button>
+                        <button onclick="nextFlashcard()" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">
+                            Next Card
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Conversations Section -->
+    <div id="conversations" class="section hidden py-12 px-6">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-3xl font-bold mb-8 text-center">Real-Life Conversations</h2>
+            
+            <!-- Conversation Categories Grid -->
+            <div class="grid md:grid-cols-4 gap-4 mb-8">
+                <div class="card-hover bg-white rounded-lg shadow-lg p-4">
+                    <div class="text-2xl mb-2">🛍️</div>
+                    <h3 class="font-bold mb-1">Shopping</h3>
+                    <p class="text-xs text-gray-600 mb-3">Store & market talks</p>
+                    <button onclick="loadConversation('shopping')" class="w-full bg-blue-600 text-white py-1 rounded text-sm hover:bg-blue-700 transition">
+                        Practice
+                    </button>
+                </div>
+                
+                <div class="card-hover bg-white rounded-lg shadow-lg p-4">
+                    <div class="text-2xl mb-2">🍽️</div>
+                    <h3 class="font-bold mb-1">Restaurant</h3>
+                    <p class="text-xs text-gray-600 mb-3">Dining conversations</p>
+                    <button onclick="loadConversation('restaurant')" class="w-full bg-green-600 text-white py-1 rounded text-sm hover:bg-green-700 transition">
+                        Practice
+                    </button>
+                </div>
+                
+                <div class="card-hover bg-white rounded-lg shadow-lg p-4">
+                    <div class="text-2xl mb-2">💼</div>
+                    <h3 class="font-bold mb-1">Interview</h3>
+                    <p class="text-xs text-gray-600 mb-3">Job interviews</p>
+                    <button onclick="loadConversation('interview')" class="w-full bg-purple-600 text-white py-1 rounded text-sm hover:bg-purple-700 transition">
+                        Practice
+                    </button>
+                </div>
+                
+                <div class="card-hover bg-white rounded-lg shadow-lg p-4">
+                    <div class="text-2xl mb-2">🏥</div>
+                    <h3 class="font-bold mb-1">Doctor Visit</h3>
+                    <p class="text-xs text-gray-600 mb-3">Medical consultation</p>
+                    <button onclick="loadConversation('doctor')" class="w-full bg-red-600 text-white py-1 rounded text-sm hover:bg-red-700 transition">
+                        Practice
+                    </button>
+                </div>
+                
+                <div class="card-hover bg-white rounded-lg shadow-lg p-4">
+                    <div class="text-2xl mb-2">🏦</div>
+                    <h3 class="font-bold mb-1">Banking</h3>
+                    <p class="text-xs text-gray-600 mb-3">Bank transactions</p>
+                    <button onclick="loadConversation('banking')" class="w-full bg-indigo-600 text-white py-1 rounded text-sm hover:bg-indigo-700 transition">
+                        Practice
+                    </button>
+                </div>
+                
+                <div class="card-hover bg-white rounded-lg shadow-lg p-4">
+                    <div class="text-2xl mb-2">✈️</div>
+                    <h3 class="font-bold mb-1">Travel</h3>
+                    <p class="text-xs text-gray-600 mb-3">Travel & tourism</p>
+                    <button onclick="loadConversation('travel')" class="w-full bg-yellow-600 text-white py-1 rounded text-sm hover:bg-yellow-700 transition">
+                        Practice
+                    </button>
+                </div>
+                
+                <div class="card-hover bg-white rounded-lg shadow-lg p-4">
+                    <div class="text-2xl mb-2">🏢</div>
+                    <h3 class="font-bold mb-1">Office</h3>
+                    <p class="text-xs text-gray-600 mb-3">Workplace talks</p>
+                    <button onclick="loadConversation('office')" class="w-full bg-gray-600 text-white py-1 rounded text-sm hover:bg-gray-700 transition">
+                        Practice
+                    </button>
+                </div>
+                
+                <div class="card-hover bg-white rounded-lg shadow-lg p-4">
+                    <div class="text-2xl mb-2">📱</div>
+                    <h3 class="font-bold mb-1">Phone Calls</h3>
+                    <p class="text-xs text-gray-600 mb-3">Phone etiquette</p>
+                    <button onclick="loadConversation('phone')" class="w-full bg-pink-600 text-white py-1 rounded text-sm hover:bg-pink-700 transition">
+                        Practice
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Conversation Display -->
+            <div id="conversationDisplay" class="bg-white rounded-lg shadow-lg p-6">
+                <h3 class="text-xl font-bold mb-4">Conversation Practice</h3>
+                <div id="conversationContent">
+                    <p class="text-gray-600">Select a scenario to practice real conversations</p>
+                </div>
+            </div>
+            
+            <!-- Role Play Tips -->
+            <div class="mt-6 bg-blue-50 rounded-lg p-6">
+                <h3 class="font-bold text-lg mb-3">💡 Conversation Tips</h3>
+                <ul class="space-y-2">
+                    <li class="flex items-start">
+                        <span class="mr-2">•</span>
+                        <span>Listen actively and don't interrupt while others are speaking</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="mr-2">•</span>
+                        <span>Use phrases like "I see", "That's interesting" to show engagement</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="mr-2">•</span>
+                        <span>Ask follow-up questions to keep the conversation flowing</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="mr-2">•</span>
+                        <span>Practice speaking slowly and clearly, especially when nervous</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Progress Section -->
+    <div id="progress" class="section hidden py-12 px-6">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="text-3xl font-bold mb-8 text-center">Your Progress</h2>
+            
+            <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+                <h3 class="text-xl font-bold mb-4">Statistics</h3>
+                <div class="grid md:grid-cols-4 gap-4">
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-blue-600" id="practiceTime">0</div>
+                        <p class="text-gray-600">Minutes Practiced</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-green-600" id="wordsLearned">0</div>
+                        <p class="text-gray-600">Words Learned</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-purple-600" id="lessonsCompleted">0</div>
+                        <p class="text-gray-600">Lessons Completed</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-yellow-600" id="streak">0</div>
+                        <p class="text-gray-600">Day Streak</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Achievement Badges -->
+            <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+                <h3 class="text-xl font-bold mb-4">Achievements</h3>
+                <div class="grid grid-cols-3 md:grid-cols-6 gap-4">
+                    <div class="text-center">
+                        <div class="text-4xl mb-2">🎯</div>
+                        <p class="text-xs">First Word</p>
+                    </div>
+                    <div class="text-center opacity-30">
+                        <div class="text-4xl mb-2">🔥</div>
+                        <p class="text-xs">7 Day Streak</p>
+                    </div>
+                    <div class="text-center opacity-30">
+                        <div class="text-4xl mb-2">💪</div>
+                        <p class="text-xs">100 Words</p>
+                    </div>
+                    <div class="text-center opacity-30">
+                        <div class="text-4xl mb-2">🌟</div>
+                        <p class="text-xs">Perfect Score</p>
+                    </div>
+                    <div class="text-center opacity-30">
+                        <div class="text-4xl mb-2">🏆</div>
+                        <p class="text-xs">Champion</p>
+                    </div>
+                    <div class="text-center opacity-30">
+                        <div class="text-4xl mb-2">👑</div>
+                        <p class="text-xs">Master</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Saved Recordings -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h3 class="text-xl font-bold mb-4">Your Recordings</h3>
+                <div id="recordingsList">
+                    <p class="text-gray-500">No recordings yet. Start practicing to save your recordings!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Action Button -->
+    <button onclick="openQuickPractice()" class="fixed bottom-6 right-6 bg-purple-600 text-white p-4 rounded-full shadow-lg hover:bg-purple-700 transition pulse-soft">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path>
+        </svg>
+    </button>
+
+    <script>
+        // Sample practice sentences
+        const practiceSentences = {
+            beginner: [
+                { text: "Hello, my name is Raj", phonetic: "heh-LOH, my naym iz rahj" },
+                { text: "How are you today?", phonetic: "how ahr yoo too-DAY?" },
+                { text: "Nice to meet you", phonetic: "nys too meet yoo" },
+                { text: "Where are you from?", phonetic: "wehr ahr yoo from?" },
+                { text: "I am from India", phonetic: "ay am from IN-dee-uh" }
+            ],
+            intermediate: [
+                { text: "Could you please help me with this?", phonetic: "kood yoo pleez help mee with this?" },
+                { text: "I would like to schedule a meeting", phonetic: "ay wood lyk too SKED-yool uh MEE-ting" },
+                { text: "Let me think about it", phonetic: "let mee think uh-BOWT it" },
+                { text: "That sounds like a great idea", phonetic: "that sowndz lyk uh grayt ay-DEE-uh" },
+                { text: "I appreciate your feedback", phonetic: "ay uh-PREE-shee-ayt yor FEED-bak" }
+            ],
+            advanced: [
+                { text: "I'd like to present my findings from the research", phonetic: "ayd lyk too pree-ZENT my FYN-dingz from thuh ree-SURCH" },
+                { text: "The quarterly results exceeded our expectations", phonetic: "thuh KWOR-tur-lee ree-ZULTS ik-SEE-did owr eks-pek-TAY-shunz" },
+                { text: "Let's collaborate on this innovative project", phonetic: "lets kuh-LAB-uh-rayt on this IN-uh-vay-tiv PRAH-jekt" }
+            ]
+        };
+
+        let currentLevel = 'beginner';
+        let currentSentenceIndex = 0;
+        let isRecording = false;
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let recordedAudios = [];
+        let stats = {
+            practiceTime: 0,
+            wordsLearned: 0,
+            lessonsCompleted: 0,
+            streak: 0
+        };
+
+        // Load stats from localStorage
+        function loadStats() {
+            const savedStats = localStorage.getItem('speakingStats');
+            if (savedStats) {
+                stats = JSON.parse(savedStats);
+                updateStatsDisplay();
+            }
+            // Load saved recordings
+            loadRecordings();
+        }
+
+        // Save stats to localStorage
+        function saveStats() {
+            localStorage.setItem('speakingStats', JSON.stringify(stats));
+            updateStatsDisplay();
+        }
+
+        // Update stats display
+        function updateStatsDisplay() {
+            document.getElementById('practiceTime').textContent = stats.practiceTime;
+            document.getElementById('wordsLearned').textContent = stats.wordsLearned;
+            document.getElementById('lessonsCompleted').textContent = stats.lessonsCompleted;
+            document.getElementById('streak').textContent = stats.streak;
+        }
+
+        // Load recordings from localStorage
+        function loadRecordings() {
+            const saved = localStorage.getItem('recordings');
+            if (saved) {
+                recordedAudios = JSON.parse(saved);
+            }
+        }
+
+        // Save recording to localStorage
+        function saveRecording(audioData) {
+            const recording = {
+                id: Date.now(),
+                sentence: practiceSentences[currentLevel][currentSentenceIndex].text,
+                level: currentLevel,
+                timestamp: new Date().toISOString(),
+                audio: audioData
+            };
+            recordedAudios.push(recording);
+            // Keep only last 10 recordings
+            if (recordedAudios.length > 10) {
+                recordedAudios.shift();
+            }
+            localStorage.setItem('recordings', JSON.stringify(recordedAudios));
+            displayRecordings();
+        }
+
+        // Display recordings
+        function displayRecordings() {
+            const recordingsList = document.getElementById('recordingsList');
+            if (!recordingsList) return;
+            
+            if (recordedAudios.length === 0) {
+                recordingsList.innerHTML = '<p class="text-gray-500">No recordings yet</p>';
+                return;
+            }
+            
+            recordingsList.innerHTML = recordedAudios.map((rec, index) => `
+                <div class="bg-gray-50 p-3 rounded mb-2">
+                    <p class="font-semibold text-sm">"${rec.sentence}"</p>
+                    <p class="text-xs text-gray-600">Level: ${rec.level} | ${new Date(rec.timestamp).toLocaleString()}</p>
+                    <div class="mt-2 flex gap-2">
+                        <button onclick="playRecording(${index})" class="text-blue-600 hover:text-blue-800 text-sm">
+                            ▶️ Play
+                        </button>
+                        <button onclick="deleteRecording(${index})" class="text-red-600 hover:text-red-800 text-sm">
+                            🗑️ Delete
+                        </button>
+                    </div>
+                    <audio id="audio-${index}" src="${rec.audio}" class="hidden"></audio>
+                </div>
+            `).reverse().join('');
+        }
+
+        // Play recording
+        function playRecording(index) {
+            const audio = document.getElementById(`audio-${index}`);
+            if (audio) {
+                audio.play();
+            }
+        }
+
+        // Delete recording
+        function deleteRecording(index) {
+            recordedAudios.splice(index, 1);
+            localStorage.setItem('recordings', JSON.stringify(recordedAudios));
+            displayRecordings();
+        }
+
+        // Show section
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.add('hidden');
+            });
+            // Hide hero if showing other sections
+            if (sectionId !== 'hero') {
+                document.getElementById('hero').classList.add('hidden');
+            }
+            // Show selected section
+            document.getElementById(sectionId).classList.remove('hidden');
+            
+            // If showing progress section, update recordings display
+            if (sectionId === 'progress') {
+                displayRecordings();
+            }
+        }
+
+        // Start lesson
+        function startLesson(level) {
+            currentLevel = level;
+            currentSentenceIndex = 0;
+            showSection('practice');
+            displayPracticeContent();
+        }
+
+        // Display practice content
+        function displayPracticeContent() {
+            const sentences = practiceSentences[currentLevel];
+            const sentence = sentences[currentSentenceIndex];
+            
+            const content = `
+                <div class="text-center">
+                    <p class="text-2xl font-bold mb-4">${sentence.text}</p>
+                    <p class="text-lg text-gray-600 italic">${sentence.phonetic}</p>
+                    <div class="mt-4 flex justify-center gap-2">
+                        ${currentSentenceIndex > 0 ? '<button onclick="previousSentence()" class="text-blue-600 hover:text-blue-800">← Previous</button>' : ''}
+                        ${currentSentenceIndex < sentences.length - 1 ? '<button onclick="nextSentence()" class="text-blue-600 hover:text-blue-800">Next →</button>' : ''}
+                    </div>
+                </div>
+            `;
+            document.getElementById('practiceContent').innerHTML = content;
+        }
+
+        // Navigate sentences
+        function previousSentence() {
+            if (currentSentenceIndex > 0) {
+                currentSentenceIndex--;
+                displayPracticeContent();
+            }
+        }
+
+        function nextSentence() {
+            const sentences = practiceSentences[currentLevel];
+            if (currentSentenceIndex < sentences.length - 1) {
+                currentSentenceIndex++;
+                displayPracticeContent();
+                stats.wordsLearned++;
+                saveStats();
+            }
+        }
+
+        // Start practice
+        function startPractice() {
+            displayPracticeContent();
+            stats.practiceTime += 5;
+            saveStats();
+        }
+
+        // Daily practice
+        function startDailyPractice() {
+            currentLevel = 'beginner';
+            currentSentenceIndex = Math.floor(Math.random() * practiceSentences.beginner.length);
+            showSection('practice');
+            displayPracticeContent();
+        }
+
+        // Play audio
+        function playAudio() {
+            const feedback = document.getElementById('feedback');
+            const feedbackText = document.getElementById('feedbackText');
+            feedback.classList.remove('hidden');
+            feedbackText.textContent = "Listening to pronunciation...";
+            
+            // Use Web Speech API if available
+            if ('speechSynthesis' in window) {
+                const sentences = practiceSentences[currentLevel];
+                const sentence = sentences[currentSentenceIndex];
+                const utterance = new SpeechSynthesisUtterance(sentence.text);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.9;
+                speechSynthesis.speak(utterance);
+                
+                utterance.onend = function() {
+                    feedbackText.textContent = "Listen carefully to the pronunciation and try to mimic it!";
+                };
+            }
+        }
+
+        // Record audio with actual recording functionality
+        async function recordAudio() {
+            const recordBtn = document.getElementById('recordBtn');
+            const feedback = document.getElementById('feedback');
+            const feedbackText = document.getElementById('feedbackText');
+            
+            if (!isRecording) {
+                // Start recording
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(stream);
+                    audioChunks = [];
+                    
+                    mediaRecorder.ondataavailable = event => {
+                        audioChunks.push(event.data);
+                    };
+                    
+                    mediaRecorder.onstop = async () => {
+                        const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                        const audioUrl = URL.createObjectURL(audioBlob);
+                        
+                        // Convert to base64 for localStorage
+                        const reader = new FileReader();
+                        reader.readAsDataURL(audioBlob);
+                        reader.onloadend = () => {
+                            const base64Audio = reader.result;
+                            saveRecording(base64Audio);
+                            
+                            // Show playback option
+                            feedbackText.innerHTML = `
+                                Recording saved! 
+                                <audio controls src="${audioUrl}" class="mt-2"></audio>
+                                <p class="mt-2">Great job! Keep practicing for better pronunciation.</p>
+                            `;
+                        };
+                        
+                        // Stop all tracks
+                        stream.getTracks().forEach(track => track.stop());
+                    };
+                    
+                    mediaRecorder.start();
+                    isRecording = true;
+                    recordBtn.classList.replace('bg-red-600', 'bg-red-800');
+                    recordBtn.innerHTML = '<span class="mr-2">⏹️</span> Stop Recording';
+                    feedback.classList.remove('hidden');
+                    feedbackText.textContent = "🎤 Recording... Speak clearly and naturally!";
+                    
+                } catch (err) {
+                    feedback.classList.remove('hidden');
+                    feedbackText.textContent = "⚠️ Please allow microphone access to record your voice.";
+                    console.error('Error accessing microphone:', err);
+                }
+            } else {
+                // Stop recording
+                if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                    mediaRecorder.stop();
+                    isRecording = false;
+                    recordBtn.classList.replace('bg-red-800', 'bg-red-600');
+                    recordBtn.innerHTML = '<span class="mr-2">🎤</span> Record';
+                }
+            }
+        }
+
+        // Practice sound pairs
+        function practiceSoundPair(sound1, sound2) {
+            const content = `
+                <div class="bg-white rounded-lg shadow-lg p-8 max-w-2xl mx-auto">
+                    <h3 class="text-2xl font-bold mb-6 text-center">Practice: ${sound1.toUpperCase()} vs ${sound2.toUpperCase()}</h3>
+                    <div class="space-y-4">
+                        <div class="bg-gray-50 p-4 rounded">
+                            <p class="font-semibold mb-2">Tips for ${sound1.toUpperCase()} sound:</p>
+                            <p class="text-gray-700">${getSoundTips(sound1)}</p>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded">
+                            <p class="font-semibold mb-2">Practice words:</p>
+                            <p class="text-lg">${getSoundExamples(sound1, sound2)}</p>
+                        </div>
+                    </div>
+                    <button onclick="showSection('pronunciation')" class="mt-6 w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">
+                        Back to Pronunciation Guide
+                    </button>
+                </div>
+            `;
+            document.getElementById('pronunciation').innerHTML = content;
+        }
+
+        // Get sound tips
+        function getSoundTips(sound) {
+            const tips = {
+                'v': 'Place your upper teeth on your lower lip and vibrate',
+                'w': 'Round your lips and push air through',
+                'th': 'Place tongue between teeth and blow air',
+                'f': 'Place upper teeth on lower lip without vibration',
+                'z': 'Vibrate your vocal cords while making S sound',
+                'sh': 'Push lips forward and release air',
+                'r': 'Curl tongue back slightly, don\'t touch the roof'
+            };
+            return tips[sound] || 'Practice with careful articulation';
+        }
+
+        // Get sound examples
+        function getSoundExamples(sound1, sound2) {
+            const examples = {
+                'v,w': 'vine/wine, very/wary, vest/west',
+                'th,d': 'this/dis, that/dat, there/dare',
+                'f,p': 'fine/pine, coffee/copy, life/lipe',
+                'z,s': 'zoo/sue, buzz/bus, prize/price',
+                'sh,s': 'ship/sip, wash/was, shore/sore',
+                'r,l': 'right/light, road/load, pray/play'
+            };
+            return examples[`${sound1},${sound2}`] || 'Practice minimal pairs';
+        }
+
+        // Quick practice modal
+        function openQuickPractice() {
+            const randomSentence = practiceSentences.beginner[Math.floor(Math.random() * practiceSentences.beginner.length)];
+            alert(`Quick Practice:\n\nSay: "${randomSentence.text}"\n\nPhonetic: ${randomSentence.phonetic}\n\nPractice this 3 times!`);
+        }
+
+        // Toggle Mobile Menu
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Toggle Dark Mode
+        function toggleDarkMode() {
+            const body = document.getElementById('app-body');
+            body.classList.toggle('dark-mode');
+            localStorage.setItem('darkMode', body.classList.contains('dark-mode'));
+        }
+
+        // Vocabulary Data
+        const vocabularyData = {
+            business: [
+                { word: "negotiate", meaning: "discuss to reach an agreement", usage: "We need to negotiate the contract terms" },
+                { word: "deadline", meaning: "time limit for completing something", usage: "The project deadline is next Friday" },
+                { word: "collaborate", meaning: "work together", usage: "Let's collaborate on this presentation" },
+                { word: "implement", meaning: "put into action", usage: "We will implement the new strategy" },
+                { word: "revenue", meaning: "income generated", usage: "Company revenue increased by 20%" }
+            ],
+            daily: [
+                { word: "appointment", meaning: "scheduled meeting", usage: "I have a doctor's appointment" },
+                { word: "groceries", meaning: "food and household items", usage: "I need to buy groceries today" },
+                { word: "commute", meaning: "travel to work", usage: "My daily commute takes 30 minutes" },
+                { word: "chores", meaning: "routine tasks", usage: "I do household chores on weekends" },
+                { word: "leisure", meaning: "free time", usage: "I enjoy leisure activities" }
+            ],
+            travel: [
+                { word: "itinerary", meaning: "travel plan", usage: "Check the travel itinerary" },
+                { word: "boarding", meaning: "getting on a plane/train", usage: "Boarding starts at gate 5" },
+                { word: "customs", meaning: "border control", usage: "Pass through customs check" },
+                { word: "accommodation", meaning: "place to stay", usage: "Book accommodation in advance" },
+                { word: "destination", meaning: "place you're going to", usage: "Our destination is Paris" }
+            ],
+            tech: [
+                { word: "interface", meaning: "user interaction point", usage: "The app has a simple interface" },
+                { word: "algorithm", meaning: "problem-solving procedure", usage: "The search algorithm is efficient" },
+                { word: "bandwidth", meaning: "data transfer capacity", usage: "We need more bandwidth" },
+                { word: "debugging", meaning: "fixing errors", usage: "I'm debugging the code" },
+                { word: "encryption", meaning: "data protection", usage: "Use encryption for security" }
+            ]
+        };
+
+        let currentVocabCategory = 'business';
+        let currentFlashcardIndex = 0;
+
+        // Load Vocabulary Category
+        function loadVocabularyCategory(category) {
+            currentVocabCategory = category;
+            const vocab = vocabularyData[category];
+            const content = `
+                <h3 class="text-xl font-bold mb-4 capitalize">${category} Vocabulary</h3>
+                <div class="space-y-4">
+                    ${vocab.map((item, index) => `
+                        <div class="border-l-4 border-blue-500 pl-4 py-2">
+                            <p class="font-bold text-lg">${item.word}</p>
+                            <p class="text-gray-600">${item.meaning}</p>
+                            <p class="text-sm italic mt-1">"${item.usage}"</p>
+                            <button onclick="speakWord('${item.word}')" class="mt-2 text-blue-600 hover:text-blue-800 text-sm">
+                                🔊 Pronounce
+                            </button>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            document.getElementById('vocabularyContent').innerHTML = content;
+        }
+
+        // Speak Word
+        function speakWord(word) {
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(word);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.8;
+                speechSynthesis.speak(utterance);
+            }
+        }
+
+        // Flashcard Functions
+        function flipFlashcard() {
+            const meaning = document.getElementById('flashcardMeaning');
+            meaning.classList.toggle('hidden');
+        }
+
+        function nextFlashcard() {
+            const allVocab = Object.values(vocabularyData).flat();
+            currentFlashcardIndex = (currentFlashcardIndex + 1) % allVocab.length;
+            const card = allVocab[currentFlashcardIndex];
+            
+            document.getElementById('flashcardWord').textContent = card.word;
+            document.getElementById('flashcardMeaning').textContent = `${card.meaning} - "${card.usage}"`;
+            document.getElementById('flashcardMeaning').classList.add('hidden');
+        }
+
+        // Enhanced Conversation Data with multiple variations
+        const conversationData = {
+            shopping: [
+                [
+                    { speaker: "Customer", text: "Excuse me, where can I find the electronics section?" },
+                    { speaker: "Staff", text: "It's on the second floor, near the escalator." },
+                    { speaker: "Customer", text: "Do you have any discounts on laptops?" },
+                    { speaker: "Staff", text: "Yes, we have a 20% discount on selected models." },
+                    { speaker: "Customer", text: "Can I pay by credit card?" },
+                    { speaker: "Staff", text: "Of course, we accept all major credit cards." }
+                ],
+                [
+                    { speaker: "Customer", text: "Hi, I'm looking for a birthday gift for my mother." },
+                    { speaker: "Staff", text: "That's lovely! What kind of things does she like?" },
+                    { speaker: "Customer", text: "She enjoys reading and gardening." },
+                    { speaker: "Staff", text: "We have a great selection of books and gardening tools in aisle 3." },
+                    { speaker: "Customer", text: "What about gift wrapping services?" },
+                    { speaker: "Staff", text: "Yes, we offer free gift wrapping at the customer service desk." }
+                ],
+                [
+                    { speaker: "Customer", text: "I'd like to return this item, please." },
+                    { speaker: "Staff", text: "Of course. Do you have the receipt?" },
+                    { speaker: "Customer", text: "Yes, here it is. I bought it last week." },
+                    { speaker: "Staff", text: "I see. May I ask why you're returning it?" },
+                    { speaker: "Customer", text: "It doesn't fit properly. Can I exchange it for a larger size?" },
+                    { speaker: "Staff", text: "Absolutely! Let me check if we have it in stock." }
+                ],
+                [
+                    { speaker: "Customer", text: "Can you help me find organic vegetables?" },
+                    { speaker: "Staff", text: "Certainly! Our organic section is in aisle 5." },
+                    { speaker: "Customer", text: "Are they locally sourced?" },
+                    { speaker: "Staff", text: "Yes, most of them come from local farms within 50 kilometers." },
+                    { speaker: "Customer", text: "That's great! Do you have any special offers today?" },
+                    { speaker: "Staff", text: "Buy 2 kg and get 500g free on all organic vegetables today." }
+                ]
+            ],
+            restaurant: [
+                [
+                    { speaker: "Waiter", text: "Good evening! Would you like to see the menu?" },
+                    { speaker: "Customer", text: "Yes, please. What do you recommend?" },
+                    { speaker: "Waiter", text: "Our chef's special pasta is very popular." },
+                    { speaker: "Customer", text: "Is it spicy? I prefer mild food." },
+                    { speaker: "Waiter", text: "We can adjust the spice level for you." },
+                    { speaker: "Customer", text: "Perfect! I'll have that with a glass of water." }
+                ],
+                [
+                    { speaker: "Waiter", text: "Welcome! Table for how many?" },
+                    { speaker: "Customer", text: "Table for four, please. Do you have a non-smoking area?" },
+                    { speaker: "Waiter", text: "Yes, right this way. Would you like to see our specials?" },
+                    { speaker: "Customer", text: "Yes, and do you have vegetarian options?" },
+                    { speaker: "Waiter", text: "Absolutely! Half of our menu is vegetarian." },
+                    { speaker: "Customer", text: "Excellent! We'll need a few minutes to decide." }
+                ],
+                [
+                    { speaker: "Customer", text: "Excuse me, I have a food allergy." },
+                    { speaker: "Waiter", text: "Of course, what are you allergic to?" },
+                    { speaker: "Customer", text: "I'm allergic to peanuts and shellfish." },
+                    { speaker: "Waiter", text: "Thank you for letting me know. I'll inform the chef." },
+                    { speaker: "Customer", text: "Which dishes would you recommend that are safe?" },
+                    { speaker: "Waiter", text: "Our grilled chicken and vegetable stir-fry are both safe options." }
+                ],
+                [
+                    { speaker: "Customer", text: "Could we have the bill, please?" },
+                    { speaker: "Waiter", text: "Certainly! Would you like to pay together or separately?" },
+                    { speaker: "Customer", text: "Together, please. Do you accept credit cards?" },
+                    { speaker: "Waiter", text: "Yes, we accept all major cards. Here's your bill." },
+                    { speaker: "Customer", text: "Is service charge included?" },
+                    { speaker: "Waiter", text: "No, service charge is not included. Tips are appreciated but optional." }
+                ]
+            ],
+            interview: [
+                [
+                    { speaker: "Interviewer", text: "Tell me about yourself." },
+                    { speaker: "Candidate", text: "I have 5 years of experience in software development." },
+                    { speaker: "Interviewer", text: "What are your greatest strengths?" },
+                    { speaker: "Candidate", text: "I'm a quick learner and work well in teams." },
+                    { speaker: "Interviewer", text: "Why do you want to work here?" },
+                    { speaker: "Candidate", text: "Your company's innovation aligns with my career goals." }
+                ],
+                [
+                    { speaker: "Interviewer", text: "Why are you leaving your current job?" },
+                    { speaker: "Candidate", text: "I'm looking for new challenges and growth opportunities." },
+                    { speaker: "Interviewer", text: "Where do you see yourself in five years?" },
+                    { speaker: "Candidate", text: "I'd like to be leading a team and managing projects." },
+                    { speaker: "Interviewer", text: "How do you handle pressure and deadlines?" },
+                    { speaker: "Candidate", text: "I prioritize tasks and maintain clear communication with my team." }
+                ],
+                [
+                    { speaker: "Interviewer", text: "Describe a challenging situation you've faced." },
+                    { speaker: "Candidate", text: "I once had to deliver a project with a very tight deadline." },
+                    { speaker: "Interviewer", text: "How did you handle it?" },
+                    { speaker: "Candidate", text: "I broke it into smaller tasks and delegated effectively." },
+                    { speaker: "Interviewer", text: "What was the outcome?" },
+                    { speaker: "Candidate", text: "We delivered on time and the client was very satisfied." }
+                ],
+                [
+                    { speaker: "Interviewer", text: "Do you have any questions for us?" },
+                    { speaker: "Candidate", text: "Yes, what's the team structure like?" },
+                    { speaker: "Interviewer", text: "You'll be working in a team of 8 people with diverse skills." },
+                    { speaker: "Candidate", text: "What about professional development opportunities?" },
+                    { speaker: "Interviewer", text: "We offer training programs and conference attendance." },
+                    { speaker: "Candidate", text: "That sounds excellent. When can I expect to hear back?" }
+                ]
+            ],
+            doctor: [
+                [
+                    { speaker: "Doctor", text: "Good morning! What brings you here today?" },
+                    { speaker: "Patient", text: "I've been having headaches for the past week." },
+                    { speaker: "Doctor", text: "How often do these headaches occur?" },
+                    { speaker: "Patient", text: "Almost every day, especially in the evening." },
+                    { speaker: "Doctor", text: "Are you taking any medication currently?" },
+                    { speaker: "Patient", text: "No, just some painkillers occasionally." }
+                ],
+                [
+                    { speaker: "Patient", text: "Doctor, I've been feeling very tired lately." },
+                    { speaker: "Doctor", text: "How long have you been experiencing this fatigue?" },
+                    { speaker: "Patient", text: "For about two months now." },
+                    { speaker: "Doctor", text: "Are you getting enough sleep?" },
+                    { speaker: "Patient", text: "I sleep 8 hours but still feel exhausted." },
+                    { speaker: "Doctor", text: "Let's run some blood tests to check for any deficiencies." }
+                ],
+                [
+                    { speaker: "Doctor", text: "Have you been taking the prescribed medicine?" },
+                    { speaker: "Patient", text: "Yes, but I sometimes forget the morning dose." },
+                    { speaker: "Doctor", text: "It's important to take it regularly. Set a reminder." },
+                    { speaker: "Patient", text: "I will. Are there any side effects I should watch for?" },
+                    { speaker: "Doctor", text: "Minor drowsiness is normal, but let me know if you feel dizzy." },
+                    { speaker: "Patient", text: "Understood. When should I come for a follow-up?" }
+                ]
+            ],
+            banking: [
+                [
+                    { speaker: "Customer", text: "I'd like to open a savings account, please." },
+                    { speaker: "Banker", text: "Certainly! Do you have your ID and address proof?" },
+                    { speaker: "Customer", text: "Yes, I have my Aadhaar card and utility bill." },
+                    { speaker: "Banker", text: "Perfect. What's the initial deposit amount?" },
+                    { speaker: "Customer", text: "I'd like to deposit 10,000 rupees." },
+                    { speaker: "Banker", text: "Great! Your account will be active within 24 hours." }
+                ],
+                [
+                    { speaker: "Customer", text: "I need to apply for a personal loan." },
+                    { speaker: "Banker", text: "How much do you need and for what purpose?" },
+                    { speaker: "Customer", text: "50,000 rupees for home renovation." },
+                    { speaker: "Banker", text: "What's your monthly income?" },
+                    { speaker: "Customer", text: "Around 40,000 rupees per month." },
+                    { speaker: "Banker", text: "You're eligible. The interest rate is 12% per annum." }
+                ],
+                [
+                    { speaker: "Customer", text: "My debit card isn't working." },
+                    { speaker: "Banker", text: "When did you last use it successfully?" },
+                    { speaker: "Customer", text: "Three days ago at an ATM." },
+                    { speaker: "Banker", text: "Let me check... Your card has been blocked for security." },
+                    { speaker: "Customer", text: "Why? I haven't done anything unusual." },
+                    { speaker: "Banker", text: "Multiple incorrect PIN attempts. I'll issue a new card." }
+                ]
+            ],
+            travel: [
+                [
+                    { speaker: "Traveler", text: "Is this the right platform for the Mumbai Express?" },
+                    { speaker: "Official", text: "Yes, it arrives at platform 3 in 10 minutes." },
+                    { speaker: "Traveler", text: "Which coach is A1?" },
+                    { speaker: "Official", text: "It will be towards the front of the train." },
+                    { speaker: "Traveler", text: "Is the train running on time?" },
+                    { speaker: "Official", text: "Yes, it's on schedule today." }
+                ],
+                [
+                    { speaker: "Passenger", text: "I'd like to book a ticket to Delhi." },
+                    { speaker: "Agent", text: "Which class would you prefer?" },
+                    { speaker: "Passenger", text: "AC 3-tier, if available." },
+                    { speaker: "Agent", text: "Yes, we have seats. When do you want to travel?" },
+                    { speaker: "Passenger", text: "This Friday evening, if possible." },
+                    { speaker: "Agent", text: "The 7:30 PM train has availability." }
+                ],
+                [
+                    { speaker: "Tourist", text: "Can you recommend a good hotel nearby?" },
+                    { speaker: "Local", text: "There's Hotel Comfort just 2 kilometers away." },
+                    { speaker: "Tourist", text: "Is it expensive?" },
+                    { speaker: "Local", text: "It's reasonable, around 2000 rupees per night." },
+                    { speaker: "Tourist", text: "How can I get there?" },
+                    { speaker: "Local", text: "Take an auto-rickshaw, it should cost about 50 rupees." }
+                ]
+            ],
+            office: [
+                [
+                    { speaker: "Employee", text: "Could we schedule a meeting to discuss the project?" },
+                    { speaker: "Manager", text: "Sure, how about tomorrow at 3 PM?" },
+                    { speaker: "Employee", text: "That works for me. Should I prepare a presentation?" },
+                    { speaker: "Manager", text: "Yes, please include the timeline and budget." },
+                    { speaker: "Employee", text: "I'll send the agenda by end of day." },
+                    { speaker: "Manager", text: "Perfect. Book the conference room too." }
+                ],
+                [
+                    { speaker: "Colleague1", text: "Did you finish the report?" },
+                    { speaker: "Colleague2", text: "Almost done. I need the sales figures from you." },
+                    { speaker: "Colleague1", text: "I'll email them in 10 minutes." },
+                    { speaker: "Colleague2", text: "Thanks! When is the deadline?" },
+                    { speaker: "Colleague1", text: "The client needs it by Friday noon." },
+                    { speaker: "Colleague2", text: "We'll make it. Let's review it together tomorrow." }
+                ],
+                [
+                    { speaker: "Employee", text: "I'd like to discuss my performance review." },
+                    { speaker: "HR", text: "Of course. Your manager gave positive feedback." },
+                    { speaker: "Employee", text: "That's great! What about the promotion?" },
+                    { speaker: "HR", text: "You're being considered for the senior role." },
+                    { speaker: "Employee", text: "When will the decision be made?" },
+                    { speaker: "HR", text: "By the end of this month." }
+                ]
+            ],
+            phone: [
+                [
+                    { speaker: "Caller", text: "Hello, may I speak to Mr. Sharma?" },
+                    { speaker: "Receptionist", text: "May I know who's calling?" },
+                    { speaker: "Caller", text: "This is Raj from ABC Company." },
+                    { speaker: "Receptionist", text: "One moment, I'll transfer your call." },
+                    { speaker: "Caller", text: "Thank you." },
+                    { speaker: "Receptionist", text: "He's in a meeting. Can I take a message?" }
+                ],
+                [
+                    { speaker: "Customer", text: "I'm calling about my internet connection." },
+                    { speaker: "Support", text: "What seems to be the problem?" },
+                    { speaker: "Customer", text: "It's been very slow since yesterday." },
+                    { speaker: "Support", text: "Let me check your connection status." },
+                    { speaker: "Customer", text: "I've already restarted the router." },
+                    { speaker: "Support", text: "I see the issue. A technician will visit tomorrow." }
+                ],
+                [
+                    { speaker: "Friend1", text: "Hi! Are you free this weekend?" },
+                    { speaker: "Friend2", text: "Yes, what do you have in mind?" },
+                    { speaker: "Friend1", text: "Let's go for a movie and dinner." },
+                    { speaker: "Friend2", text: "Sounds good! Which movie?" },
+                    { speaker: "Friend1", text: "The new action film everyone's talking about." },
+                    { speaker: "Friend2", text: "Perfect! Saturday evening works for me." }
+                ]
+            ]
+        };
+
+        let currentConversationIndex = 0;
+        let currentConversationType = '';
+        let conversationVariationIndex = 0;
+
+        // Load Conversation
+        function loadConversation(type) {
+            currentConversationType = type;
+            currentConversationIndex = 0;
+            // Select random variation for the conversation type
+            const variations = conversationData[type];
+            conversationVariationIndex = Math.floor(Math.random() * variations.length);
+            displayConversation();
+        }
+
+        // Display Conversation
+        function displayConversation() {
+            if (!currentConversationType) return;
+            
+            const conversations = conversationData[currentConversationType];
+            const conversation = conversations[conversationVariationIndex];
+            
+            // Determine speaker names based on conversation type
+            const getSpeakerRole = (speaker) => {
+                const roleMap = {
+                    'shopping': ['Customer', 'Staff'],
+                    'restaurant': ['Customer', 'Waiter'],
+                    'interview': ['Candidate', 'Interviewer'],
+                    'doctor': ['Patient', 'Doctor'],
+                    'banking': ['Customer', 'Banker'],
+                    'travel': ['Traveler', 'Passenger', 'Tourist', 'Official', 'Agent', 'Local'],
+                    'office': ['Employee', 'Manager', 'Colleague1', 'Colleague2', 'HR'],
+                    'phone': ['Caller', 'Customer', 'Friend1', 'Receptionist', 'Support', 'Friend2']
+                };
+                
+                const primarySpeakers = roleMap[currentConversationType] || [];
+                return primarySpeakers.includes(speaker) && ['Customer', 'Candidate', 'Patient', 'Traveler', 'Passenger', 'Tourist', 'Employee', 'Caller', 'Friend1'].includes(speaker);
+            };
+            
+            const content = `
+                <div class="mb-4 flex justify-between items-center">
+                    <h4 class="font-bold capitalize text-xl">${currentConversationType} Conversation (Scenario ${conversationVariationIndex + 1})</h4>
+                    <button onclick="refreshConversation()" class="bg-gray-500 text-white px-3 py-1 rounded text-sm hover:bg-gray-600 transition" title="Load Different Scenario">
+                        🔄 Different Scenario
+                    </button>
+                </div>
+                <div class="bg-gray-50 rounded-lg p-4 mb-6">
+                    <div class="space-y-3">
+                        ${conversation.map((line, index) => `
+                            <div class="${getSpeakerRole(line.speaker) ? 'text-right' : 'text-left'}">
+                                <p class="font-semibold text-sm ${getSpeakerRole(line.speaker) ? 'text-blue-600' : 'text-green-600'}">${line.speaker}:</p>
+                                <p class="bg-white inline-block rounded-lg px-4 py-2 mt-1 shadow-sm max-w-xs md:max-w-md">${line.text}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-3 justify-center">
+                    <button onclick="playConversation()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+                        🔊 Play Full Conversation
+                    </button>
+                    <button onclick="practiceWithPauses()" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">
+                        ⏸️ Practice with Pauses
+                    </button>
+                    <button onclick="showTranslations()" class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition">
+                        📝 Show Translations
+                    </button>
+                </div>
+                <div id="conversationTranslations" class="hidden mt-4 bg-yellow-50 p-4 rounded">
+                    <h5 class="font-bold mb-2">Key Phrases with Hindi Translation:</h5>
+                    <div class="space-y-2 text-sm">
+                        ${conversation.slice(0, 3).map(line => `
+                            <div>
+                                <p class="font-semibold">"${line.text}"</p>
+                                <p class="text-gray-600 italic">→ ${getHindiTranslation(line.text)}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            document.getElementById('conversationContent').innerHTML = content;
+        }
+
+        // Refresh conversation with different variation
+        function refreshConversation() {
+            const variations = conversationData[currentConversationType];
+            const oldIndex = conversationVariationIndex;
+            // Ensure we get a different variation
+            do {
+                conversationVariationIndex = Math.floor(Math.random() * variations.length);
+            } while (conversationVariationIndex === oldIndex && variations.length > 1);
+            displayConversation();
+        }
+
+        // Practice with pauses
+        async function practiceWithPauses() {
+            if (!currentConversationType || !('speechSynthesis' in window)) return;
+            
+            const conversations = conversationData[currentConversationType];
+            const conversation = conversations[conversationVariationIndex];
+            
+            for (let i = 0; i < conversation.length; i++) {
+                const line = conversation[i];
+                const utterance = new SpeechSynthesisUtterance(line.text);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.85;
+                
+                // Different voice pitch for different speakers
+                const isUserRole = ['Customer', 'Candidate', 'Patient', 'Traveler', 'Passenger', 'Tourist', 'Employee', 'Caller', 'Friend1'].includes(line.speaker);
+                utterance.pitch = isUserRole ? 1.1 : 0.9;
+                
+                await new Promise(resolve => {
+                    utterance.onend = resolve;
+                    speechSynthesis.speak(utterance);
+                });
+                
+                // Longer pause after each line for practice
+                await new Promise(resolve => setTimeout(resolve, 2000));
+            }
+        }
+
+        // Show translations
+        function showTranslations() {
+            const translationsDiv = document.getElementById('conversationTranslations');
+            if (translationsDiv) {
+                translationsDiv.classList.toggle('hidden');
+            }
+        }
+
+        // Get Hindi translation (sample translations)
+        function getHindiTranslation(text) {
+            const sampleTranslations = {
+                "Excuse me, where can I find the electronics section?": "माफ़ करें, इलेक्ट्रॉनिक्स सेक्शन कहाँ है?",
+                "It's on the second floor, near the escalator.": "यह दूसरी मंजिल पर है, एस्केलेटर के पास।",
+                "Do you have any discounts on laptops?": "क्या लैपटॉप पर कोई छूट है?",
+                "Good evening! Would you like to see the menu?": "शुभ संध्या! क्या आप मेन्यू देखना चाहेंगे?",
+                "Yes, please. What do you recommend?": "हाँ, कृपया। आप क्या सुझाव देंगे?",
+                "Tell me about yourself.": "अपने बारे में बताइए।",
+                "Good morning! What brings you here today?": "सुप्रभात! आज आप यहाँ क्यों आए हैं?",
+                "I'd like to open a savings account, please.": "मैं एक बचत खाता खोलना चाहता हूं।"
+            };
+            return sampleTranslations[text] || "हिंदी अनुवाद उपलब्ध है";
+        }
+
+        // Play Conversation
+        async function playConversation() {
+            if (!currentConversationType || !('speechSynthesis' in window)) return;
+            
+            const conversations = conversationData[currentConversationType];
+            const conversation = conversations[conversationVariationIndex];
+            
+            for (let line of conversation) {
+                const utterance = new SpeechSynthesisUtterance(line.text);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.9;
+                
+                // Different voice pitch for different speakers
+                const isUserRole = ['Customer', 'Candidate', 'Patient', 'Traveler', 'Passenger', 'Tourist', 'Employee', 'Caller', 'Friend1'].includes(line.speaker);
+                utterance.pitch = isUserRole ? 1.1 : 0.9;
+                
+                await new Promise(resolve => {
+                    utterance.onend = resolve;
+                    speechSynthesis.speak(utterance);
+                });
+                
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+        }
+
+        // Practice Role
+        function practiceRole(role) {
+            alert(`Practice Mode: You will play the customer/candidate role. Listen to the other speaker and respond naturally!`);
+        }
+
+        // Check and update achievements
+        function checkAchievements() {
+            const achievements = document.querySelectorAll('#progress .grid > div');
+            
+            // First Word Achievement
+            if (stats.wordsLearned > 0 && achievements[0]) {
+                achievements[0].classList.remove('opacity-30');
+            }
+            
+            // 7 Day Streak
+            if (stats.streak >= 7 && achievements[1]) {
+                achievements[1].classList.remove('opacity-30');
+            }
+            
+            // 100 Words
+            if (stats.wordsLearned >= 100 && achievements[2]) {
+                achievements[2].classList.remove('opacity-30');
+            }
+        }
+
+        // Enhanced Stats Tracking
+        function updateDailyStreak() {
+            const today = new Date().toDateString();
+            const lastPractice = localStorage.getItem('lastPracticeDate');
+            
+            if (lastPractice !== today) {
+                const yesterday = new Date();
+                yesterday.setDate(yesterday.getDate() - 1);
+                
+                if (lastPractice === yesterday.toDateString()) {
+                    stats.streak++;
+                } else if (lastPractice !== today) {
+                    stats.streak = 1;
+                }
+                
+                localStorage.setItem('lastPracticeDate', today);
+                saveStats();
+            }
+        }
+
+        // Speech Recognition (if supported)
+        let recognition = null;
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.continuous = false;
+            recognition.lang = 'en-US';
+            recognition.interimResults = false;
+            
+            recognition.onresult = function(event) {
+                const transcript = event.results[0][0].transcript;
+                const confidence = event.results[0][0].confidence;
+                
+                const feedback = document.getElementById('feedback');
+                const feedbackText = document.getElementById('feedbackText');
+                feedback.classList.remove('hidden');
+                feedbackText.innerHTML = `
+                    <p>You said: "${transcript}"</p>
+                    <p>Confidence: ${(confidence * 100).toFixed(1)}%</p>
+                    ${confidence > 0.8 ? '<p class="text-green-600">Great pronunciation!</p>' : '<p class="text-yellow-600">Keep practicing!</p>'}
+                `;
+            };
+        }
+
+        // Translation functionality
+        let translationHistory = [];
+        let translateTimeout = null;
+        let voiceRecognition = null;
+
+        // Extended translation dictionary for demonstration
+        // In production, this would use a translation API
+        const translations = {
+            // Hindi phrases
+            'नमस्ते': 'Hello',
+            'धन्यवाद': 'Thank you',
+            'कैसे हैं आप?': 'How are you?',
+            'मुझे मदद चाहिए': 'I need help',
+            'मैं': 'I',
+            'आप': 'you',
+            'वह': 'he/she',
+            'हम': 'we',
+            'यह': 'this',
+            'वह': 'that',
+            'अच्छा': 'good',
+            'बुरा': 'bad',
+            'खाना': 'food/to eat',
+            'पानी': 'water',
+            'घर': 'home',
+            'स्कूल': 'school',
+            'काम': 'work',
+            'मैं आज बाज़ार जाना चाहता हूं': 'I want to go to the market today',
+            'आपका नाम क्या है?': 'What is your name?',
+            'मुझे हिंदी आती है': 'I know Hindi',
+            'क्या आप अंग्रेजी बोलते हैं?': 'Do you speak English?',
+            'कृपया': 'Please',
+            'माफ़ करें': 'Sorry',
+            'हां': 'Yes',
+            'नहीं': 'No',
+            'ठीक है': 'Okay',
+            'समय': 'Time',
+            'दिन': 'Day',
+            'रात': 'Night',
+            'सुबह': 'Morning',
+            'शाम': 'Evening',
+            
+            // Bengali phrases
+            'হ্যালো': 'Hello',
+            'ধন্যবাদ': 'Thank you',
+            'আমি': 'I',
+            'আপনি': 'You',
+            'ভালো': 'Good',
+            
+            // Tamil phrases
+            'வணக்கம்': 'Hello',
+            'நன்றி': 'Thank you',
+            'நான்': 'I',
+            'நீங்கள்': 'You',
+            
+            // Telugu phrases
+            'హలో': 'Hello',
+            'ధన్యవాదాలు': 'Thank you',
+            'నేను': 'I',
+            'మీరు': 'You',
+            
+            // Marathi phrases
+            'नमस्कार': 'Hello',
+            'धन्यवाद': 'Thank you',
+            'मी': 'I',
+            'तुम्ही': 'You'
+        };
+
+        // Language-specific placeholders
+        const languagePlaceholders = {
+            'hi': 'यहाँ हिंदी में टाइप करें...',
+            'bn': 'এখানে বাংলায় টাইপ করুন...',
+            'te': 'ఇక్కడ తెలుగులో టైప్ చేయండి...',
+            'mr': 'इथे मराठीत टाइप करा...',
+            'ta': 'இங்கே தமிழில் தட்டச்சு செய்யவும்...',
+            'gu': 'અહીં ગુજરાતીમાં ટાઇપ કરો...',
+            'kn': 'ಇಲ್ಲಿ ಕನ್ನಡದಲ್ಲಿ ಟೈಪ್ ಮಾಡಿ...',
+            'ml': 'ഇവിടെ മലയാളത്തിൽ ടൈപ്പ് ചെയ്യുക...',
+            'pa': 'ਇੱਥੇ ਪੰਜਾਬੀ ਵਿੱਚ ਟਾਈਪ ਕਰੋ...',
+            'or': 'ଏଠାରେ ଓଡ଼ିଆରେ ଟାଇପ୍ କରନ୍ତୁ...',
+            'as': 'ইয়াত অসমীয়াত টাইপ কৰক...',
+            'ur': 'یہاں اردو میں ٹائپ کریں...'
+        };
+
+        // Update placeholder based on selected language
+        function updatePlaceholder() {
+            const lang = document.getElementById('sourceLanguage').value;
+            const sourceText = document.getElementById('sourceText');
+            sourceText.placeholder = languagePlaceholders[lang] || 'Type here in your language...';
+        }
+
+        // Translate text function
+        function translateText() {
+            const sourceText = document.getElementById('sourceText').value.trim();
+            const translatedTextArea = document.getElementById('translatedText');
+            const pronunciationGuide = document.getElementById('pronunciationGuide');
+            
+            if (!sourceText) {
+                translatedTextArea.value = '';
+                pronunciationGuide.textContent = '';
+                return;
+            }
+            
+            // Simulate translation (in real app, this would call an API)
+            let translatedText = translations[sourceText] || simulateTranslation(sourceText);
+            
+            translatedTextArea.value = translatedText;
+            pronunciationGuide.textContent = `Pronunciation: ${generatePronunciation(translatedText)}`;
+            
+            // Add to history
+            addToHistory(sourceText, translatedText);
+            
+            // Auto-speak the translation
+            speakTranslation();
+        }
+
+        // Simulate translation for unknown phrases
+        function simulateTranslation(text) {
+            // Simple word-by-word translation simulation
+            const words = text.split(' ');
+            const translated = words.map(word => {
+                return translations[word] || word;
+            }).join(' ');
+            
+            return translated !== text ? translated : 'Translation in progress...';
+        }
+
+        // Generate pronunciation guide
+        function generatePronunciation(text) {
+            const pronunciations = {
+                'Hello': 'heh-LOH',
+                'Thank you': 'thank YOO',
+                'How are you?': 'how ahr YOO?',
+                'I need help': 'ay need help',
+                'What is your name?': 'wot iz yor naym?'
+            };
+            
+            return pronunciations[text] || text.toLowerCase().replace(/[aeiou]/g, match => match.toUpperCase());
+        }
+
+        // Handle translation with delay
+        function handleTranslateDelay() {
+            clearTimeout(translateTimeout);
+            translateTimeout = setTimeout(() => {
+                translateText();
+            }, 500);
+        }
+
+        // Quick translate function
+        function quickTranslate(text) {
+            document.getElementById('sourceText').value = text;
+            translateText();
+        }
+
+        // Clear source text
+        function clearSource() {
+            document.getElementById('sourceText').value = '';
+            document.getElementById('translatedText').value = '';
+            document.getElementById('pronunciationGuide').textContent = '';
+        }
+
+        // Speak translation
+        function speakTranslation() {
+            const text = document.getElementById('translatedText').value;
+            if (text && 'speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.9;
+                speechSynthesis.speak(utterance);
+            }
+        }
+
+        // Copy translation to clipboard
+        function copyTranslation() {
+            const text = document.getElementById('translatedText').value;
+            if (text) {
+                navigator.clipboard.writeText(text).then(() => {
+                    // Show feedback
+                    const button = event.target.closest('button');
+                    const originalHTML = button.innerHTML;
+                    button.innerHTML = '✅';
+                    setTimeout(() => {
+                        button.innerHTML = originalHTML;
+                    }, 1000);
+                });
+            }
+        }
+
+        // Add to translation history
+        function addToHistory(source, translation) {
+            const historyItem = {
+                source: source,
+                translation: translation,
+                language: document.getElementById('sourceLanguage').selectedOptions[0].text,
+                timestamp: new Date().toISOString()
+            };
+            
+            translationHistory.unshift(historyItem);
+            
+            // Keep only last 10 items
+            if (translationHistory.length > 10) {
+                translationHistory.pop();
+            }
+            
+            // Save to localStorage
+            localStorage.setItem('translationHistory', JSON.stringify(translationHistory));
+            
+            // Update display
+            displayTranslationHistory();
+        }
+
+        // Display translation history
+        function displayTranslationHistory() {
+            const historyDiv = document.getElementById('translationHistory');
+            if (translationHistory.length === 0) {
+                historyDiv.innerHTML = '<p class="text-gray-500">Your recent translations will appear here</p>';
+                return;
+            }
+            
+            historyDiv.innerHTML = translationHistory.map((item, index) => `
+                <div class="bg-gray-50 p-3 rounded border-l-4 border-blue-500">
+                    <div class="flex justify-between items-start">
+                        <div class="flex-1">
+                            <p class="text-sm text-gray-600">${item.language}</p>
+                            <p class="font-semibold">${item.source}</p>
+                            <p class="text-blue-600">→ ${item.translation}</p>
+                        </div>
+                        <button onclick="reuseTranslation(${index})" class="text-blue-600 hover:text-blue-800 ml-2">
+                            ↻
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Reuse translation from history
+        function reuseTranslation(index) {
+            const item = translationHistory[index];
+            document.getElementById('sourceText').value = item.source;
+            document.getElementById('translatedText').value = item.translation;
+            speakTranslation();
+        }
+
+        // Voice input functionality
+        function startVoiceInput() {
+            const voiceStatus = document.getElementById('voiceStatus');
+            const sourceText = document.getElementById('sourceText');
+            const selectedLang = document.getElementById('sourceLanguage').value;
+            
+            // Language codes for speech recognition
+            const langCodes = {
+                'hi': 'hi-IN',
+                'bn': 'bn-IN',
+                'te': 'te-IN',
+                'mr': 'mr-IN',
+                'ta': 'ta-IN',
+                'gu': 'gu-IN',
+                'kn': 'kn-IN',
+                'ml': 'ml-IN',
+                'pa': 'pa-IN',
+                'or': 'or-IN',
+                'as': 'as-IN',
+                'ur': 'ur-IN'
+            };
+            
+            if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
+                voiceStatus.textContent = '⚠️ Voice input not supported in your browser';
+                return;
+            }
+            
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            voiceRecognition = new SpeechRecognition();
+            voiceRecognition.continuous = false;
+            voiceRecognition.interimResults = true;
+            voiceRecognition.lang = langCodes[selectedLang] || 'hi-IN';
+            
+            voiceRecognition.onstart = () => {
+                voiceStatus.textContent = '🎤 Listening... Speak now';
+                voiceStatus.classList.add('text-red-600');
+            };
+            
+            voiceRecognition.onresult = (event) => {
+                const transcript = Array.from(event.results)
+                    .map(result => result[0])
+                    .map(result => result.transcript)
+                    .join('');
+                
+                sourceText.value = transcript;
+                
+                if (event.results[0].isFinal) {
+                    translateText();
+                }
+            };
+            
+            voiceRecognition.onerror = (event) => {
+                voiceStatus.textContent = `⚠️ Error: ${event.error}`;
+                voiceStatus.classList.remove('text-red-600');
+            };
+            
+            voiceRecognition.onend = () => {
+                voiceStatus.textContent = 'Voice input stopped';
+                voiceStatus.classList.remove('text-red-600');
+                setTimeout(() => {
+                    voiceStatus.textContent = '';
+                }, 2000);
+            };
+            
+            voiceRecognition.start();
+        }
+
+        // Load translation history from localStorage
+        function loadTranslationHistory() {
+            const saved = localStorage.getItem('translationHistory');
+            if (saved) {
+                translationHistory = JSON.parse(saved);
+                displayTranslationHistory();
+            }
+        }
+
+        // Enhanced Translation System
+        let favorites = [];
+        let currentPhraseCategory = 'greetings';
+        
+        // Comprehensive phrase categories
+        const phraseCategories = {
+            greetings: {
+                hi: [
+                    { text: 'नमस्ते', translation: 'Hello/Namaste', pronunciation: 'nah-mah-STAY' },
+                    { text: 'सुप्रभात', translation: 'Good morning', pronunciation: 'su-pra-BHAT' },
+                    { text: 'शुभ रात्रि', translation: 'Good night', pronunciation: 'shubh RAA-tree' },
+                    { text: 'कैसे हैं आप?', translation: 'How are you?', pronunciation: 'KAI-say hain aap?' },
+                    { text: 'अलविदा', translation: 'Goodbye', pronunciation: 'al-vee-DAA' },
+                    { text: 'फिर मिलेंगे', translation: 'See you again', pronunciation: 'phir mi-LEN-gay' }
+                ]
+            },
+            daily: {
+                hi: [
+                    { text: 'मुझे भूख लगी है', translation: 'I am hungry', pronunciation: 'mujhe BHOOKH lagi hai' },
+                    { text: 'पानी चाहिए', translation: 'Need water', pronunciation: 'PAA-nee cha-HI-ye' },
+                    { text: 'कितना पैसा?', translation: 'How much money?', pronunciation: 'KIT-na PAI-sa?' },
+                    { text: 'यह क्या है?', translation: 'What is this?', pronunciation: 'yeh KYA hai?' },
+                    { text: 'समय क्या है?', translation: 'What is the time?', pronunciation: 'sa-MAY kya hai?' },
+                    { text: 'मैं घर जा रहा हूं', translation: 'I am going home', pronunciation: 'main ghar ja raha hoon' }
+                ]
+            },
+            emergency: {
+                hi: [
+                    { text: 'मदद चाहिए', translation: 'Need help', pronunciation: 'ma-DAD cha-HI-ye' },
+                    { text: 'डॉक्टर बुलाओ', translation: 'Call a doctor', pronunciation: 'DOC-tor bu-LAO' },
+                    { text: 'पुलिस बुलाओ', translation: 'Call police', pronunciation: 'pu-LEES bu-LAO' },
+                    { text: 'आपातकालीन', translation: 'Emergency', pronunciation: 'aa-paat-kaa-LEEN' },
+                    { text: 'मैं खो गया हूं', translation: 'I am lost', pronunciation: 'main kho gaya hoon' },
+                    { text: 'अस्पताल कहां है?', translation: 'Where is hospital?', pronunciation: 'as-pa-TAAL kahan hai?' }
+                ]
+            },
+            business: {
+                hi: [
+                    { text: 'मीटिंग कब है?', translation: 'When is the meeting?', pronunciation: 'MEE-ting kab hai?' },
+                    { text: 'रिपोर्ट तैयार है', translation: 'Report is ready', pronunciation: 'ri-PORT tai-YAAR hai' },
+                    { text: 'कृपया ईमेल भेजें', translation: 'Please send email', pronunciation: 'kri-PAYA email BHE-jen' },
+                    { text: 'प्रोजेक्ट पूरा हो गया', translation: 'Project is completed', pronunciation: 'PRO-ject POO-ra ho gaya' },
+                    { text: 'बजट क्या है?', translation: 'What is the budget?', pronunciation: 'BUD-get kya hai?' },
+                    { text: 'समय सीमा', translation: 'Deadline', pronunciation: 'sa-MAY SEE-ma' }
+                ]
+            },
+            travel: {
+                hi: [
+                    { text: 'स्टेशन कहां है?', translation: 'Where is the station?', pronunciation: 'STA-tion kahan hai?' },
+                    { text: 'टिकट कितने का है?', translation: 'How much is the ticket?', pronunciation: 'TIC-ket kit-ne ka hai?' },
+                    { text: 'ट्रेन कब आएगी?', translation: 'When will train come?', pronunciation: 'TRAIN kab aa-YE-gi?' },
+                    { text: 'होटल कहां है?', translation: 'Where is hotel?', pronunciation: 'ho-TEL kahan hai?' },
+                    { text: 'हवाई अड्डा', translation: 'Airport', pronunciation: 'ha-VAI AD-da' },
+                    { text: 'बस स्टैंड', translation: 'Bus stand', pronunciation: 'BUS stand' }
+                ]
+            }
+        };
+        
+        // Enhanced translation dictionary with more comprehensive coverage
+        const enhancedTranslations = {
+            // Common words
+            'मैं': 'I', 'तुम': 'you', 'वह': 'he/she', 'हम': 'we', 'वे': 'they',
+            'यह': 'this', 'वह': 'that', 'कौन': 'who', 'क्या': 'what', 'कब': 'when',
+            'कहां': 'where', 'क्यों': 'why', 'कैसे': 'how', 'कितना': 'how much',
+            
+            // Actions
+            'जाना': 'go', 'आना': 'come', 'खाना': 'eat', 'पीना': 'drink',
+            'सोना': 'sleep', 'उठना': 'wake up', 'बैठना': 'sit', 'खड़ा': 'stand',
+            'चलना': 'walk', 'दौड़ना': 'run', 'बोलना': 'speak', 'सुनना': 'listen',
+            
+            // Objects
+            'पानी': 'water', 'खाना': 'food', 'घर': 'home', 'स्कूल': 'school',
+            'दुकान': 'shop', 'बाज़ार': 'market', 'किताब': 'book', 'कलम': 'pen',
+            'कार': 'car', 'बस': 'bus', 'ट्रेन': 'train', 'हवाई जहाज': 'airplane',
+            
+            // Adjectives
+            'अच्छा': 'good', 'बुरा': 'bad', 'बड़ा': 'big', 'छोटा': 'small',
+            'गर्म': 'hot', 'ठंडा': 'cold', 'नया': 'new', 'पुराना': 'old',
+            'सुंदर': 'beautiful', 'बदसूरत': 'ugly', 'आसान': 'easy', 'मुश्किल': 'difficult'
+        };
+        
+        // Update translator UI
+        function updateTranslatorUI() {
+            const lang = document.getElementById('sourceLanguage').value;
+            const sourceText = document.getElementById('sourceText');
+            const mode = document.getElementById('translationMode').value;
+            
+            if (mode === 'toEnglish') {
+                sourceText.placeholder = languagePlaceholders[lang] || 'Type here in your language...';
+            } else {
+                sourceText.placeholder = 'Type here in English...';
+            }
+            
+            // Clear existing text
+            clearTranslator();
+            
+            // Load phrases for selected language
+            loadPhrasesForLanguage(lang);
+        }
+        
+        // Update translation mode
+        function updateTranslationMode() {
+            updateTranslatorUI();
+        }
+        
+        // Perform translation
+        function performTranslation() {
+            const sourceText = document.getElementById('sourceText').value.trim();
+            const translatedTextArea = document.getElementById('translatedText');
+            const pronunciationGuide = document.getElementById('pronunciationGuide');
+            const charCount = document.getElementById('charCount');
+            const status = document.getElementById('translationStatus');
+            
+            // Update character count
+            charCount.textContent = `${sourceText.length} characters`;
+            
+            if (!sourceText) {
+                translatedTextArea.value = '';
+                pronunciationGuide.textContent = '';
+                status.textContent = '';
+                return;
+            }
+            
+            // Show translating status
+            status.textContent = '⏳ Translating...';
+            
+            // Perform translation with delay for better UX
+            setTimeout(() => {
+                const mode = document.getElementById('translationMode').value;
+                let translatedText = '';
+                
+                if (mode === 'toEnglish') {
+                    // Check comprehensive dictionary first
+                    translatedText = enhancedTranslations[sourceText] || translations[sourceText];
+                    
+                    if (!translatedText) {
+                        // Try word-by-word translation
+                        const words = sourceText.split(' ');
+                        const translatedWords = words.map(word => {
+                            return enhancedTranslations[word] || translations[word] || word;
+                        });
+                        translatedText = translatedWords.join(' ');
+                    }
+                } else {
+                    // Reverse translation (English to selected language)
+                    const reverseDict = Object.entries({...enhancedTranslations, ...translations})
+                        .reduce((acc, [key, value]) => {
+                            acc[value.toLowerCase()] = key;
+                            return acc;
+                        }, {});
+                    
+                    translatedText = reverseDict[sourceText.toLowerCase()] || sourceText;
+                }
+                
+                translatedTextArea.value = translatedText;
+                pronunciationGuide.textContent = `Pronunciation: ${generatePronunciation(translatedText)}`;
+                status.textContent = '✅ Translation complete';
+                
+                // Auto-speak if enabled
+                if (document.getElementById('speakBtn').dataset.autoSpeak === 'true') {
+                    speakTranslation();
+                }
+                
+                setTimeout(() => {
+                    status.textContent = '';
+                }, 2000);
+            }, 300);
+        }
+        
+        // Show phrase category
+        function showPhraseCategory(category) {
+            currentPhraseCategory = category;
+            const lang = document.getElementById('sourceLanguage').value;
+            
+            // Update tab styles
+            document.querySelectorAll('.phraseTab').forEach(tab => {
+                tab.classList.remove('bg-blue-600');
+                tab.classList.add('bg-gray-400');
+            });
+            event.target.classList.remove('bg-gray-400');
+            event.target.classList.add('bg-blue-600');
+            
+            loadPhrasesForLanguage(lang);
+        }
+        
+        // Load phrases for selected language
+        function loadPhrasesForLanguage(lang) {
+            const phrasesGrid = document.getElementById('phrasesGrid');
+            const phrases = phraseCategories[currentPhraseCategory]?.hi || []; // Default to Hindi for now
+            
+            phrasesGrid.innerHTML = phrases.map(phrase => `
+                <button onclick="quickTranslatePhrase('${phrase.text}', '${phrase.translation}')" 
+                    class="bg-gray-100 p-3 rounded hover:bg-gray-200 transition text-left">
+                    <p class="font-semibold text-sm">${phrase.text}</p>
+                    <p class="text-xs text-gray-600">${phrase.translation}</p>
+                </button>
+            `).join('');
+        }
+        
+        // Quick translate phrase
+        function quickTranslatePhrase(text, translation) {
+            document.getElementById('sourceText').value = text;
+            document.getElementById('translatedText').value = translation;
+            
+            // Find pronunciation
+            const phrases = phraseCategories[currentPhraseCategory]?.hi || [];
+            const phrase = phrases.find(p => p.text === text);
+            if (phrase) {
+                document.getElementById('pronunciationGuide').textContent = `Pronunciation: ${phrase.pronunciation}`;
+            }
+            
+            speakTranslation();
+        }
+        
+        // Clear translator
+        function clearTranslator() {
+            document.getElementById('sourceText').value = '';
+            document.getElementById('translatedText').value = '';
+            document.getElementById('pronunciationGuide').textContent = '';
+            document.getElementById('charCount').textContent = '0 characters';
+            document.getElementById('translationStatus').textContent = '';
+        }
+        
+        // Save to favorites
+        function saveToFavorites() {
+            const source = document.getElementById('sourceText').value;
+            const translation = document.getElementById('translatedText').value;
+            
+            if (!source || !translation) {
+                alert('Please translate something first!');
+                return;
+            }
+            
+            const favorite = {
+                id: Date.now(),
+                source: source,
+                translation: translation,
+                language: document.getElementById('sourceLanguage').selectedOptions[0].text,
+                timestamp: new Date().toISOString()
+            };
+            
+            favorites.unshift(favorite);
+            
+            // Keep only last 20 favorites
+            if (favorites.length > 20) {
+                favorites.pop();
+            }
+            
+            // Save to localStorage
+            localStorage.setItem('translationFavorites', JSON.stringify(favorites));
+            
+            // Update display
+            displayFavorites();
+            
+            // Show confirmation
+            document.getElementById('translationStatus').textContent = '⭐ Saved to favorites!';
+            setTimeout(() => {
+                document.getElementById('translationStatus').textContent = '';
+            }, 2000);
+        }
+        
+        // Display favorites
+        function displayFavorites() {
+            const favoritesList = document.getElementById('favoritesList');
+            
+            if (favorites.length === 0) {
+                favoritesList.innerHTML = '<p class="text-gray-500">No favorites saved yet</p>';
+                return;
+            }
+            
+            favoritesList.innerHTML = favorites.map((fav, index) => `
+                <div class="bg-gray-50 p-3 rounded flex justify-between items-center">
+                    <div class="flex-1">
+                        <p class="font-semibold text-sm">${fav.source}</p>
+                        <p class="text-blue-600 text-sm">→ ${fav.translation}</p>
+                        <p class="text-xs text-gray-500">${fav.language} • ${new Date(fav.timestamp).toLocaleDateString()}</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="loadFavorite(${index})" class="text-blue-600 hover:text-blue-800">
+                            ↻
+                        </button>
+                        <button onclick="deleteFavorite(${index})" class="text-red-600 hover:text-red-800">
+                            ×
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // Load favorite
+        function loadFavorite(index) {
+            const fav = favorites[index];
+            document.getElementById('sourceText').value = fav.source;
+            document.getElementById('translatedText').value = fav.translation;
+            speakTranslation();
+        }
+        
+        // Delete favorite
+        function deleteFavorite(index) {
+            favorites.splice(index, 1);
+            localStorage.setItem('translationFavorites', JSON.stringify(favorites));
+            displayFavorites();
+        }
+        
+        // Clear all favorites
+        function clearFavorites() {
+            if (confirm('Are you sure you want to clear all favorites?')) {
+                favorites = [];
+                localStorage.removeItem('translationFavorites');
+                displayFavorites();
+            }
+        }
+        
+        // Load favorites from localStorage
+        function loadFavorites() {
+            const saved = localStorage.getItem('translationFavorites');
+            if (saved) {
+                favorites = JSON.parse(saved);
+                displayFavorites();
+            }
+        }
+        
+        // Initialize on load
+        window.onload = function() {
+            loadStats();
+            checkAchievements();
+            updateDailyStreak();
+            loadTranslationHistory();
+            loadFavorites();
+            
+            // Load dark mode preference
+            const darkMode = localStorage.getItem('darkMode') === 'true';
+            if (darkMode) {
+                document.getElementById('app-body').classList.add('dark-mode');
+            }
+            
+            // Initialize first flashcard
+            nextFlashcard();
+            
+            // Initialize translator
+            updateTranslatorUI();
+            showPhraseCategory('greetings');
+        };
+    </script>
+</body>
+</html>
